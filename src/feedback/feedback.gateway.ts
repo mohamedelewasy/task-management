@@ -62,8 +62,6 @@ export class FeedbackGateway {
     client.emit('response', await this.feedbackService.findAll());
   }
 
-  @Roles('admin', 'coach')
-  @UseGuards(RoleGuard)
   @SubscribeMessage('findOneFeedback')
   async findOne(
     @ConnectedSocket() client: Socket,
@@ -71,7 +69,14 @@ export class FeedbackGateway {
   ) {
     client.emit(
       'response',
-      await this.feedbackService.findOne(findFeedbackDto.id),
+      await this.feedbackService.findOne(
+        (
+          this.jwtService.verify(
+            client.handshake.headers.authorization.split(' ')[1],
+          ) as { userId: string }
+        ).userId,
+        findFeedbackDto.id,
+      ),
     );
   }
 

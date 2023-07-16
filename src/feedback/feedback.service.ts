@@ -52,15 +52,24 @@ export class FeedbackService {
     });
   }
 
-  async findOne(id: string) {
-    return await this.Feedbacks.findOne({
+  async findOne(userId: string, id: string) {
+    const feedback = await this.Feedbacks.findOne({
       where: { id },
-      relations: ['user', 'assignment', 'assignment.task'],
+      relations: ['user', 'assignment', 'assignment.task', 'assignment.user'],
       select: {
         user: { id: true, name: true },
-        assignment: { id: true, task: { id: true, title: true } },
+        assignment: {
+          id: true,
+          task: { id: true, title: true },
+          user: { id: true },
+        },
       },
     });
+    const user = await this.Users.findOneBy({ id: userId });
+    if (user.role === 'coach' || user.role === 'admin') return feedback;
+    if (feedback.assignment.user.id !== userId)
+      throw new WsException('not allowed');
+    return feedback;
   }
 
   async update(userId: string, data: UpdateFeedbackDto) {
