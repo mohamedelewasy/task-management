@@ -76,6 +76,6 @@ Title|event|emit|emit to|Roles
 |:--:|:--:|:--:|:--:|:--:|
 create|`createFeedback`|`createNewFeedback`|coaches, admins|coach, admin
 find all|`findAllFeedback`|`response`|client|coach, admin
-find one|`findOneFeedback`|`response`|client|coach, admin
+find one|`findOneFeedback`|`response`|client|all
 update|`updateFeedback`|`updateExistsFeedback`|coaches,admins|coach, admin
 delete|`removeFeedback`|`removeExistsFeedback`|coaches,admins|admin
